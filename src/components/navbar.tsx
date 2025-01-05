@@ -1,44 +1,40 @@
-"use client"
-import { CuboidIcon as Cube } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+"use client";
+import { CuboidIcon as Cube } from "lucide-react";
+import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export function Navbar() {
-  const [isConnecting, setIsConnecting] = useState(false)
-
-  const handleConnect = async () => {
-    setIsConnecting(true)
-    // Simulate connection delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsConnecting(false)
-  }
+  // const { address } = useAccount()
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="bg-white border-b border-green/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <Cube className="h-8 w-8 text-orange-500" />
+              {/* <Cube className="h-8 w-8 text-orange-500" /> */}
               <span className="text-xl font-semibold">Fairplay</span>
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost">Markets</Button>
-            <Button variant="ghost">SDK</Button>
-            <Button 
-              variant="default" 
-              className="bg-orange-500 hover:bg-orange-600"
-              onClick={handleConnect}
-              disabled={isConnecting}
+            <Link
+              href="/markets"
+              className="text-green hover:text-green/80 cursor-pointer"
             >
-              {isConnecting ? "Connecting..." : "Connect Wallet"}
-            </Button>
+              Markets
+            </Link>
+            <Link
+              href="/sdk"
+              className="text-green hover:text-green/80 cursor-pointer"
+            >
+              SDK
+            </Link>
+          </div>
+          <div className="flex items-center">
+            <ConnectButton />
           </div>
         </div>
       </div>
     </nav>
-  )
+  );
 }
-
