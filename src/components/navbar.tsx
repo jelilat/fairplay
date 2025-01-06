@@ -1,7 +1,6 @@
 "use client";
-import { CuboidIcon as Cube } from "lucide-react";
 import Link from "next/link";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectKitButton } from "connectkit";
 
 export function Navbar() {
   // const { address } = useAccount()
@@ -31,7 +30,7 @@ export function Navbar() {
             </Link>
           </div>
           <div className="flex items-center">
-            <ConnectButton />
+            <ConnectKitButton />
           </div>
         </div>
       </div>
