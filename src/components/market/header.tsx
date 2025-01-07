@@ -1,4 +1,3 @@
-import { Coins } from "./coins";
 import { Card } from "@/components/ui/card";
 
 export function MarketHeader() {
@@ -10,9 +9,7 @@ export function MarketHeader() {
           <div className="text-3xl font-bold text-green">$24,792.92</div>
         </div>
 
-        <div className="flex gap-8">
-          <Coins />
-        </div>
+        <div className="flex gap-8">{/* <Coins /> */}</div>
 
         <div className="grid grid-cols-2 gap-8">
           <div>

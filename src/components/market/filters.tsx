@@ -1,5 +1,4 @@
 "use client";
-import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -7,8 +6,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import React, { useState } from "react";
+import { CreateMarketModal } from "./create-market-modal";
+import { useAccount, useWriteContract } from "wagmi";
+import { parseEther } from "viem";
+import { CONTRACT_ADDRESS, abi } from "@/components/constants";
 
 export function MarketFilters() {
+  const { address } = useAccount();
+  const { toast } = useToast();
+  const { data: hash, writeContract } = useWriteContract();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleCreateMarket = (
+    question: string,
+    category: string,
+    endTime: number,
+    liquidity: string
+  ) => {
+    if (!address) {
+      toast({
+        title: "Please connect your wallet",
+        description: "You need to connect your wallet to create a market",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    writeContract({
+      address: CONTRACT_ADDRESS,
+      abi: abi,
+      functionName: "createMarket",
+      args: [question, category, endTime],
+      value: parseEther(liquidity),
+    });
+  };
+
   return (
     <div className="flex flex-wrap gap-4 mb-8 items-center">
       <Select defaultValue="all">
@@ -20,6 +55,7 @@ export function MarketFilters() {
           <SelectItem value="crypto">Cryptocurrency</SelectItem>
           <SelectItem value="ai">Artificial Intelligence</SelectItem>
           <SelectItem value="medical">Medical</SelectItem>
+          <SelectItem value="finance">Gaming</SelectItem>
         </SelectContent>
       </Select>
 
@@ -49,12 +85,21 @@ export function MarketFilters() {
       <div className="flex-1" />
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green/40" />
-        <input
-          type="search"
-          placeholder="Search markets"
-          className="pl-10 pr-4 py-2 rounded-md border border-green/10 bg-white w-[200px] focus:outline-none focus:ring-2 focus:ring-green/20"
-        />
+        <button
+          type="button"
+          className="px-3 py-2 border-[#2d4d31] border text-[#2d4d31] rounded-lg hover:bg-[#2d4d31] hover:text-white text-sm"
+          onClick={() => setModalOpen(true)}
+        >
+          Create Market
+        </button>
+      </div>
+      <CreateMarketModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreateMarket={handleCreateMarket}
+      />
+      <div>
+        <p>Hash: {hash}</p>
       </div>
     </div>
   );
