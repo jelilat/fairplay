@@ -17,26 +17,28 @@ export function MarketData({ marketIndex }: { marketIndex: number }) {
   useEffect(() => {
     if (marketCore && marketState && yesStakes && noStakes) {
       const fetchMarketData = async () => {
-        const yesStakesNum = BigInt(yesStakes);
-        const noStakesNum = BigInt(noStakes);
+        const yesStakesNum = BigInt(yesStakes as number);
+        const noStakesNum = BigInt(noStakes as number);
         const volume = Number(yesStakesNum + noStakesNum) || 0;
 
-        const liquidity = BigInt(marketState[0]);
+        const _marketState = marketState as number[];
+        const _marketCore = marketCore as string[];
+        const liquidity = BigInt(_marketState[0]);
         const currentTime = BigInt(Math.floor(Date.now() / 1000));
-        const timeToEnd = BigInt(marketCore[2]) - currentTime;
+        const timeToEnd = BigInt(_marketCore[2]) - currentTime;
         const apy = Number(
-          (BigInt(marketState[3]) * BigInt(365 * 24 * 60 * 60 * 100)) /
+          (BigInt(_marketState[3]) * BigInt(365 * 24 * 60 * 60 * 100)) /
             (liquidity * timeToEnd)
         );
 
-        let yesPrice;
-        if (marketState[1] === 0 && marketState[2] === 0) {
+        let yesPrice: number;
+        if (_marketState[1] === 0 && _marketState[2] === 0) {
           yesPrice = 0.5;
         } else {
           const totalStake =
-            BigInt(marketState[1] || 0) + BigInt(marketState[2] || 0);
+            BigInt(_marketState[1] || 0) + BigInt(_marketState[2] || 0);
           const probability =
-            (BigInt(marketState[1] || 0) * BigInt(1e18)) / totalStake;
+            (BigInt(_marketState[1] || 0) * BigInt(1e18)) / totalStake;
           yesPrice = Number(probability) / 1e18;
         }
         const noPrice = 1 - yesPrice;
@@ -51,10 +53,10 @@ export function MarketData({ marketIndex }: { marketIndex: number }) {
         );
         setMarketData({
           marketId: marketIndex,
-          category: marketCore[1] as string,
-          question: marketCore[0] as string,
+          category: _marketCore[1] as string,
+          question: _marketCore[0] as string,
           volume: Number(volume),
-          liquidity: Number(liquidity) / 1e18,
+          liquidity: (Number(liquidity) / 1e18).toString(),
           apy: Number(apy),
           yesPrice: Number(yesPrice),
           noPrice: Number(noPrice),
@@ -63,7 +65,11 @@ export function MarketData({ marketIndex }: { marketIndex: number }) {
 
       fetchMarketData();
     }
-  }, [marketCore, marketState, yesStakes, noStakes]);
+  }, [marketIndex, marketCore, marketState, yesStakes, noStakes]);
+
+  if (!marketData) {
+    return null; // or a loading spinner
+  }
 
   return <MarketCard {...marketData} />;
 }
