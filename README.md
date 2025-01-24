@@ -18,7 +18,7 @@ You can find the smart contract for Fairplay at the following link:
 
 Try the live demo of Fairplay at:
 
-[Fairplay App](https://fairplay.vercel.app/)
+[Fairplay App](https://fairplay-beige.vercel.app/)
 
 ## Video Demo
 
